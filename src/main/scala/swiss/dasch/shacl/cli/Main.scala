@@ -5,11 +5,14 @@ import org.apache.jena.riot.RDFFormat
 import zio.*
 import zio.cli.*
 import zio.cli.HelpDoc.Span.text
+import zio.logging.slf4j.bridge.Slf4jBridge
 
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
 object Main extends ZIOCliDefault {
+
+  override val bootstrap = Runtime.removeDefaultLoggers >>> Slf4jBridge.initialize
 
   private val validator = ShaclValidator()
 
@@ -42,6 +45,4 @@ object Main extends ZIOCliDefault {
       } yield 1
     }
   }
-
-  def run(args: List[String]) = cliApp.run(args)
 }

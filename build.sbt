@@ -12,12 +12,13 @@ val zioTest    = "dev.zio" %% "zio-test"     % ZioVersion
 val zioTestSbt = "dev.zio" %% "zio-test-sbt" % ZioVersion
 
 // production dependencies
-val zio           = "dev.zio"        %% "zio"       % ZioVersion
-val zioCli        = "dev.zio"        %% "zio-cli"   % "0.7.2"
-val jenaCore      = "org.apache.jena" % "jena-core" % JenaVersion
-val topbraidShacl = "org.topbraid"    % "shacl"     % TopbraidShaclVersion
+val zio           = "dev.zio"        %% "zio"                       % ZioVersion
+val zioCli        = "dev.zio"        %% "zio-cli"                   % "0.7.2"
+val jenaCore      = "org.apache.jena" % "jena-core"                 % JenaVersion
+val topbraidShacl = "org.topbraid"    % "shacl"                     % TopbraidShaclVersion
+val slf4j         = "dev.zio"        %% "zio-logging-slf4j2-bridge" % "2.5.0"
 
-val prodDependencies = Seq(zio, zioCli, jenaCore, topbraidShacl)
+val prodDependencies = Seq(zio, zioCli, jenaCore, topbraidShacl, slf4j)
 val testDependencies = Seq(zioTest, zioTestSbt).map(_ % Test)
 
 testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
