@@ -8,7 +8,7 @@ just docker-build
 
 Run the container:
 ```zsh
-docker run --rm -v `pwd`:/data daschswiss/shacl-cli:latest validate /data/shacl.ttl /data/data.ttl /data/report.ttl"
+docker run --rm -v `pwd`:/data daschswiss/shacl-cli:latest validate /data/shacl.ttl /data/data.ttl /data/report.ttl
 ```
 
 ### CLI Usage
