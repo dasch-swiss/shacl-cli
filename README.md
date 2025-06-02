@@ -13,28 +13,12 @@ docker run --rm -v `pwd`:/data daschswiss/shacl-cli:latest validate --shacl /dat
 
 ### CLI Usage
 
-Print the help message:
+Print the usage message:
 ```zsh
-docker run --rm daschswiss/shacl-cli:latest
+just usage
 ```
 
-The help message looks like this:
-```text
-   _____ __  _____   ________      ________    ____
-  / ___// / / /   | / ____/ /     / ____/ /   /  _/
-  \__ \/ /_/ / /| |/ /   / /     / /   / /    / /
- ___/ / __  / ___ / /___/ /___  / /___/ /____/ /
-/____/_/ /_/_/  |_\____/_____/  \____/_____/___/
-
-
-
-SHACL CLI 0.0.1 -- Validate SHACL shapes against data files
-
-USAGE
-
-  $ shacl validate [--validate-shapes] [--report-details] [--add-blank-nodes] --shacl <file> --data <file> --report <file>
-
-COMMANDS
-
-  - validate [--validate-shapes] [--report-details] [--add-blank-nodes] --shacl <file> --data <file> --report <file>  Validate a SHACL shape against a data file.```
+Print the more detailed help message:
+```zsh
+just help
 ```
