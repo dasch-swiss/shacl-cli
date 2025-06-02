@@ -12,7 +12,7 @@ import java.io.FileOutputStream
 
 object Main extends ZIOCliDefault {
 
-  override val bootstrap = Runtime.removeDefaultLoggers >>> Slf4jBridge.initialize
+  override val bootstrap: ZLayer[ZIOAppArgs, Any, Unit] = Runtime.removeDefaultLoggers >>> Slf4jBridge.initialize
 
   private val validator = ShaclValidator()
 
