@@ -19,3 +19,8 @@ validate shacl data: docker-build
 # Prints the usage of the SHACL validation command
 usage:
     ./sbtx run
+
+
+# Prints the detailed help of the SHACL validation command
+help:
+    ./sbtx "run --help"

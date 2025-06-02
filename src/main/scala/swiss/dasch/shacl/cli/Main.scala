@@ -17,13 +17,16 @@ object Main extends ZIOCliDefault {
   private val validator = ShaclValidator()
 
   private val options =
-    Options.boolean("validate-shapes") ++
-      Options.boolean("report-details", false) ++
-      Options.boolean("add-blank-nodes") ++
-      Options.file("shacl", Exists.Yes) ++
-      Options.file("data", Exists.Yes) ++
-      Options.file("report", zio.cli.Exists.Either)
-  private val help: HelpDoc = HelpDoc.p("Validate a SHACL shape against a data file.")
+    Options.boolean("validate-shapes") ?? "If present shapes must be validated" ++
+      Options.boolean("do-not-report-details", false) ?? "If present report does not produce sh:details" ++
+      Options.boolean(
+        "add-blank-nodes",
+      ) ?? "If present finds all blank nodes in the report that references the shapes graph" ++
+      Options.file("shacl", Exists.Yes) ?? "Path to the shacl shapes file (in turtle)" ++
+      Options.file("data", Exists.Yes) ?? "Path to the data file (in turtle)" ++
+      Options.file("report", zio.cli.Exists.Either) ?? "Path to the report file (in turtle)"
+  private val help: HelpDoc =
+    HelpDoc.p("Validate a SHACL shape against a data file. Currently supports Turtle format only.")
 
   private val command =
     Command("shacl").subcommands(Command("validate", options).withHelp(help))
