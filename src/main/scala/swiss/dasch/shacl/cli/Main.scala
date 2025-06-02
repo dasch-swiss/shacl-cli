@@ -5,14 +5,21 @@ import org.apache.jena.riot.RDFFormat
 import zio.*
 import zio.cli.*
 import zio.cli.HelpDoc.Span.text
+import zio.logging.ConsoleLoggerConfig
+import zio.logging.LogFormat
 import zio.logging.slf4j.bridge.Slf4jBridge
+import zio.logging.consoleLogger
+import zio.logging.LogFormat.*
 
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
 object Main extends ZIOCliDefault {
 
-  override val bootstrap: ZLayer[ZIOAppArgs, Any, Unit] = Runtime.removeDefaultLoggers >>> Slf4jBridge.initialize
+  private val logFormat                      = line.highlight
+  private val logConfig: ConsoleLoggerConfig = ConsoleLoggerConfig.default.copy(format = logFormat)
+  override val bootstrap: ZLayer[ZIOAppArgs, Any, Unit] =
+    Runtime.removeDefaultLoggers >>> consoleLogger(logConfig) >>> Slf4jBridge.initialize
 
   private val validator = ShaclValidator()
 
@@ -45,6 +52,7 @@ object Main extends ZIOCliDefault {
         reportPath <- ZIO.fromAutoCloseable(ZIO.succeed(new FileOutputStream(reportFile.toFile)))
         report     <- validator.validate(data, shapes, ValidationOptions(validateShapes, reportDetails, addBlankNodes))
         _          <- ZIO.attemptBlockingIO(RDFDataMgr.write(reportPath, report.getModel, RDFFormat.TURTLE))
+        _          <- ZIO.logInfo(s"Validation report written to ${reportFile.toAbsolutePath}")
       } yield 1
     }
   }
