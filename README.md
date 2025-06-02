@@ -13,8 +13,13 @@ docker run --rm -v `pwd`:/data daschswiss/shacl-cli:latest validate /data/shacl.
 
 ### CLI Usage
 
+Print the help message:
+```zsh
+docker run --rm daschswiss/shacl-cli:latest
 ```
-❯ docker run --rm daschswiss/shacl-cli:latest
+
+The help message looks like this:
+```text
    _____ __  _____   ________      ________    ____
   / ___// / / /   | / ____/ /     / ____/ /   /  _/
   \__ \/ /_/ / /| |/ /   / /     / /   / /    / /
