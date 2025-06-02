@@ -15,3 +15,7 @@ validate shacl data: docker-build
     @echo "Validating SHACL shapes"
     docker run --rm -v `pwd`:/data daschswiss/shacl-cli:latest validate --shacl /data/{{shacl}} --data /data/{{data}} --report /data/report.ttl
     @echo "Validation complete. Check report.ttl for results."
+
+# Prints the usage of the SHACL validation command
+usage:
+    ./sbtx run
