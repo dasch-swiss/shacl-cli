@@ -27,4 +27,4 @@ jobs:
           distribution: "temurin"
           cache: "sbt"
       - name: Run tests
-        run: sbtx test
+        run: ./sbtx test
