@@ -32,10 +32,9 @@ SHACL CLI 0.0.1 -- Validate SHACL shapes against data files
 
 USAGE
 
-  $ shacl validate [--validate-shapes] [--report-details] [--add-blank-nodes] <shacl.ttl> <data.ttl> <report.ttl>
+  $ shacl validate [--validate-shapes] [--report-details] [--add-blank-nodes] --shacl <file> --data <file> --report <file>
 
 COMMANDS
 
-  - validate [--validate-shapes] [--report-details] [--add-blank-nodes] <shacl.ttl> <data.ttl> <report.ttl>  Validate a SHACL shape against a data file.
-
+  - validate [--validate-shapes] [--report-details] [--add-blank-nodes] --shacl <file> --data <file> --report <file>  Validate a SHACL shape against a data file.```
 ```

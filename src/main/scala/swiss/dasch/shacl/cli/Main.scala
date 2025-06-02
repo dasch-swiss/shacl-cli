@@ -16,12 +16,14 @@ object Main extends ZIOCliDefault {
   private val options =
     Options.boolean("validate-shapes") ++
       Options.boolean("report-details", false) ++
-      Options.boolean("add-blank-nodes")
-  private val arguments     = Args.text("shacl.ttl") ++ Args.text("data.ttl") ++ Args.text("report.ttl")
+      Options.boolean("add-blank-nodes") ++
+      Options.file("shacl", Exists.Yes) ++
+      Options.file("data", Exists.Yes) ++
+      Options.file("report", zio.cli.Exists.Either)
   private val help: HelpDoc = HelpDoc.p("Validate a SHACL shape against a data file.")
 
   private val command =
-    Command("shacl").subcommands(Command("validate", options, arguments).withHelp(help))
+    Command("shacl").subcommands(Command("validate", options).withHelp(help))
 
   // Define val cliApp using CliApp.make
   val cliApp = CliApp.make(
@@ -29,12 +31,12 @@ object Main extends ZIOCliDefault {
     version = "0.0.1",
     summary = text("Validate SHACL shapes against data files"),
     command = command,
-  ) { case ((validateShapes, reportDetails, addBlankNodes), (shaclPath, dataPath, reportPath)) =>
+  ) { case (validateShapes, reportDetails, addBlankNodes, shaclFile, dataFile, reportFile) =>
     ZIO.scoped {
       for {
-        shapes     <- ZIO.fromAutoCloseable(ZIO.succeed(new FileInputStream(shaclPath)))
-        data       <- ZIO.fromAutoCloseable(ZIO.succeed(new FileInputStream(dataPath)))
-        reportPath <- ZIO.fromAutoCloseable(ZIO.succeed(new FileOutputStream(reportPath)))
+        shapes     <- ZIO.fromAutoCloseable(ZIO.succeed(new FileInputStream(shaclFile.toFile)))
+        data       <- ZIO.fromAutoCloseable(ZIO.succeed(new FileInputStream(dataFile.toFile)))
+        reportPath <- ZIO.fromAutoCloseable(ZIO.succeed(new FileOutputStream(reportFile.toFile)))
         report     <- validator.validate(data, shapes, ValidationOptions(validateShapes, reportDetails, addBlankNodes))
         _          <- ZIO.attemptBlockingIO(RDFDataMgr.write(reportPath, report.getModel, RDFFormat.TURTLE))
       } yield 1
