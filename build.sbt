@@ -1,4 +1,9 @@
-import scala.collection.Seq
+import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.Docker
+import sbt.*
+import sbt.Keys.version
+
+import scala.language.postfixOps
+import scala.sys.process.*
 
 val scala3Version = "3.3.5"
 
@@ -36,11 +41,18 @@ dockerBaseImage       := "eclipse-temurin:21-jre-noble"
 dockerBuildxPlatforms := Seq("linux/arm64/v8", "linux/amd64")
 dockerUpdateLatest    := true
 
+val gitCommit = ("git rev-parse HEAD" !!).trim
+val gitBranch = Option("git rev-parse --abbrev-ref HEAD" !!)
+  .map(_.trim)
+  .filter(b => !(b == "main" || b == "HEAD"))
+  .map(_.replace('/', '-'))
+val gitVersion = ("git describe --tag --dirty --abbrev=7 --always  " !!).trim + gitBranch.fold("")("-" + _)
+
+ThisBuild / version := gitVersion
 lazy val root =
   Project(id = "root", file("."))
     .settings(
       name         := "shacl-cli",
       scalaVersion := scala3Version,
-      version      := "0.1.0-SNAPSHOT",
       libraryDependencies ++= testDependencies ++ prodDependencies,
     )
