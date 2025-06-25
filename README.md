@@ -1,4 +1,8 @@
 ## A docker container for SHACL validation 
+
+This project provides a Docker container for validating RDF data against [SHACL](https://www.w3.org/TR/shacl/) (Shapes Constraint Language) shapes. 
+It uses Scala 3 and ZIO for the CLI application, and Apache Jena with TopBraid SHACL for the validation logic.
+
 ### Usage
 
 Build the container:
