@@ -1,4 +1,4 @@
-name: Docker publish Webapi and Sipi images
+name: Build and Publish Docker Image
 
 on:
   push:
