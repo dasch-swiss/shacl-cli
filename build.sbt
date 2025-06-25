@@ -1,11 +1,15 @@
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.Docker
-import sbt.*
+import sbt._
 import sbt.Keys.version
 
 import scala.language.postfixOps
-import scala.sys.process.*
+import scala.sys.process._
 
-val scala3Version = "3.3.5"
+addCommandAlias("fmt", "; all root/scalafmtSbt root/scalafmtAll; root/scalafixAll")
+
+Global / scalaVersion      := "3.3.5"
+Global / semanticdbEnabled := true
+Global / semanticdbVersion := scalafixSemanticdb.revision
 
 val ZioVersion = "2.1.19"
 
@@ -49,10 +53,22 @@ val gitBranch = Option("git rev-parse --abbrev-ref HEAD" !!)
 val gitVersion = ("git describe --tag --dirty --abbrev=7 --always  " !!).trim + gitBranch.fold("")("-" + _)
 
 ThisBuild / version := gitVersion
+
+val customScalacOptions = Seq(
+  "-feature",
+  "-unchecked",
+  "-deprecation",
+  "-Yresolve-term-conflict:package",
+  "-Wvalue-discard",
+  "-Xmax-inlines:64",
+  "-Wunused:all",
+  "-Xfatal-warnings",
+)
+
 lazy val root =
   Project(id = "root", file("."))
     .settings(
-      name         := "shacl-cli",
-      scalaVersion := scala3Version,
+      name := "shacl-cli",
       libraryDependencies ++= testDependencies ++ prodDependencies,
+      scalacOptions ++= customScalacOptions,
     )

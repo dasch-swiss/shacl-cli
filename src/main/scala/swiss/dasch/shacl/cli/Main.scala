@@ -7,9 +7,9 @@ import zio.cli.*
 import zio.cli.HelpDoc.Span.text
 import zio.logging.ConsoleLoggerConfig
 import zio.logging.LogFormat
-import zio.logging.slf4j.bridge.Slf4jBridge
-import zio.logging.consoleLogger
 import zio.logging.LogFormat.*
+import zio.logging.consoleLogger
+import zio.logging.slf4j.bridge.Slf4jBridge
 
 import java.io.FileInputStream
 import java.io.FileOutputStream
