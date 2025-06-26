@@ -41,7 +41,7 @@ Compile / mainClass  := Some("swiss.dasch.shacl.cli.Main")
 Docker / packageName := "daschswiss/shacl-cli"
 dockerExposedPorts ++= Seq()
 
-dockerBaseImage       := "eclipse-temurin:21-jre-noble"
+dockerBaseImage       := "eclipse-temurin:21-alpine"
 dockerBuildxPlatforms := Seq("linux/arm64/v8", "linux/amd64")
 dockerUpdateLatest    := true
 
