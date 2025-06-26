@@ -62,7 +62,7 @@ The application is containerized using Docker and built with SBT.
 - Uses SBT with Scala 3.3.5
 - sbt-native-packager for Docker image creation
 - Multi-platform Docker builds (linux/arm64, linux/amd64)
-- Base image: eclipse-temurin:21-jre-noble
+- Base image: eclipse-temurin:21-alpine
 
 ## File Structure Notes
 
