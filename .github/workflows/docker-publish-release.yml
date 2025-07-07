@@ -1,13 +1,12 @@
-name: Build and Publish Docker Image
+name: "Release: Build and Publish Docker Image"
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
-  publish-from-branch:
-    if: github.event_name != 'release'
+  publish-docker-release:
+    if: github.event_name == 'release'
     name: Publish
     runs-on: ubuntu-latest
     steps:
