@@ -1,0 +1,14 @@
+name: "Release: Build and Publish Docker Image"
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-docker-release:
+    if: github.event_name == 'release' && startsWith(github.ref, 'refs/tags')
+    name: "Publish Release"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and publish docker image to Dockerhub
+        uses: dasch-swiss/shacl-cli/.github/actions/docker@main
