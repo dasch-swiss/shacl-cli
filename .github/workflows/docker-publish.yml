@@ -13,3 +13,6 @@ jobs:
     steps:
       - name: Build and publish docker image to Dockerhub
         uses: dasch-swiss/shacl-cli/.github/actions/docker@main
+        with:
+          docker-hub-token: ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker-user: ${{ secrets.DOCKER_USER }}
