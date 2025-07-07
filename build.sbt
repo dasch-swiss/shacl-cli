@@ -1,4 +1,4 @@
-import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.Docker
+import com.typesafe.sbt.packager.docker.*
 import sbt._
 import sbt.Keys.version
 
@@ -41,7 +41,7 @@ Compile / mainClass  := Some("swiss.dasch.shacl.cli.Main")
 Docker / packageName := "daschswiss/shacl-cli"
 dockerExposedPorts ++= Seq()
 
-dockerBaseImage       := "eclipse-temurin:21-alpine"
+dockerBaseImage       := "eclipse-temurin:21"
 dockerBuildxPlatforms := Seq("linux/arm64/v8", "linux/amd64")
 dockerUpdateLatest    := true
 
