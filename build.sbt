@@ -41,9 +41,14 @@ Compile / mainClass  := Some("swiss.dasch.shacl.cli.Main")
 Docker / packageName := "daschswiss/shacl-cli"
 dockerExposedPorts ++= Seq()
 
-dockerBaseImage       := "eclipse-temurin:21"
+dockerBaseImage       := "eclipse-temurin:21-jre-alpine"
 dockerBuildxPlatforms := Seq("linux/arm64/v8", "linux/amd64")
 dockerUpdateLatest    := true
+dockerCommands ++= Seq(
+  Cmd("USER", "root"),
+  Cmd("RUN", "apk add --no-cache bash"),
+  Cmd("USER", "1001:0")
+)
 
 val gitCommit = ("git rev-parse HEAD" !!).trim
 val gitBranch = Option("git rev-parse --abbrev-ref HEAD" !!)
