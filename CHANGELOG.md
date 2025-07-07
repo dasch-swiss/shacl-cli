@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.5](https://github.com/dasch-swiss/shacl-cli/compare/v0.0.4...v0.0.5) (2025-07-07)
+
+
+### Bug Fixes
+
+* Fix GitHub Actions composite action validation errors ([#12](https://github.com/dasch-swiss/shacl-cli/issues/12)) ([24fc252](https://github.com/dasch-swiss/shacl-cli/commit/24fc252d9544d326321d8c9c447dcfac5237c7a0))
+* Publish docker container with right tag on release ([#10](https://github.com/dasch-swiss/shacl-cli/issues/10)) ([eb1d7ad](https://github.com/dasch-swiss/shacl-cli/commit/eb1d7ad2a7a11485fa8fb740d555454a6c8f0b2e))
+
 ## [0.0.4](https://github.com/dasch-swiss/shacl-cli/compare/v0.0.3...v0.0.4) (2025-07-07)
 
 
