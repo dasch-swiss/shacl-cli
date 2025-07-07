@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.4](https://github.com/dasch-swiss/shacl-cli/compare/v0.0.3...v0.0.4) (2025-07-07)
+
+
+### Maintenances
+
+* Reduce size by using alpine jre base image ([#8](https://github.com/dasch-swiss/shacl-cli/issues/8)) ([47fd1f9](https://github.com/dasch-swiss/shacl-cli/commit/47fd1f9c34777e800da33d25a3119345376a4304))
+
 ## [0.0.3](https://github.com/dasch-swiss/shacl-cli/compare/v0.0.2...v0.0.3) (2025-07-07)
 
 
