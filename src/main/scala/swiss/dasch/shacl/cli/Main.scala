@@ -45,15 +45,17 @@ object Main extends ZIOCliDefault {
     summary = text("Validate SHACL shapes against data files"),
     command = command,
   ) { case (validateShapes, reportDetails, addBlankNodes, shaclFile, dataFile, reportFile) =>
-    ZIO.scoped {
-      for {
-        shapes     <- ZIO.fromAutoCloseable(ZIO.succeed(new FileInputStream(shaclFile.toFile)))
-        data       <- ZIO.fromAutoCloseable(ZIO.succeed(new FileInputStream(dataFile.toFile)))
-        reportPath <- ZIO.fromAutoCloseable(ZIO.succeed(new FileOutputStream(reportFile.toFile)))
-        report     <- validator.validate(data, shapes, ValidationOptions(validateShapes, reportDetails, addBlankNodes))
-        _          <- ZIO.attemptBlockingIO(RDFDataMgr.write(reportPath, report.getModel, RDFFormat.TURTLE))
-        _          <- ZIO.logInfo(s"Validation report written to ${reportFile.toAbsolutePath}")
-      } yield 1
-    }
+    ZIO
+      .scoped {
+        for {
+          shapes     <- ZIO.fromAutoCloseable(ZIO.attemptBlockingIO(new FileInputStream(shaclFile.toFile)))
+          data       <- ZIO.fromAutoCloseable(ZIO.attemptBlockingIO(new FileInputStream(dataFile.toFile)))
+          reportPath <- ZIO.fromAutoCloseable(ZIO.attemptBlockingIO(new FileOutputStream(reportFile.toFile)))
+          report     <- validator.validate(data, shapes, ValidationOptions(validateShapes, reportDetails, addBlankNodes))
+          _          <- ZIO.attemptBlockingIO(RDFDataMgr.write(reportPath, report.getModel, RDFFormat.TURTLE))
+          _          <- ZIO.logInfo(s"Validation report written to ${reportFile.toAbsolutePath}")
+        } yield 1
+      }
+      .onError(cause => Console.printLineError(cause.prettyPrint).orDie)
   }
 }

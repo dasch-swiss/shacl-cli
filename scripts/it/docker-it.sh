@@ -25,7 +25,7 @@ CONFORMS_TRUE_RE='sh:conforms[[:space:]]+true'
 CONFORMS_FALSE_RE='sh:conforms[[:space:]]+false'
 
 run_scenario() {
-  local name="$1" shapes_fixture="$2" data_fixture="$3"
+  local name="$1" shapes_fixture="$2" data_fixture="$3" mount_opts="${4:-}"
   local tmp stdout_f stderr_f rc=0
   tmp="$(mktemp -d)"
   stdout_f="$(mktemp)"
@@ -39,7 +39,7 @@ run_scenario() {
   cp "$FIXTURES_DIR/$data_fixture"   "$tmp/data.ttl"
   chmod 777 "$tmp"
 
-  docker run --rm -v "$tmp:/data" "$IMAGE" \
+  docker run --rm -v "$tmp:/data${mount_opts}" "$IMAGE" \
     validate --shacl /data/shapes.ttl --data /data/data.ttl --report /data/report.ttl \
     >"$stdout_f" 2>"$stderr_f" || rc=$?
 
@@ -59,14 +59,19 @@ run_scenario() {
       _assert "$name" "sh:conforms false"         "grep -qE '$CONFORMS_FALSE_RE' '$tmp/report.ttl'"    || scenario_ok=0
       ;;
     invalid-input)
-      # NOTE: The container currently emits diagnostics to stdout rather than
-      # stderr (see dsp-tools silent-failure report). This assertion is
-      # intentionally permissive — it accepts a diagnostic on either stream —
-      # so it catches the *pathological* case (truly silent non-zero exit) but
-      # tolerates the known channel-routing wart. Tighten to `stderr non-empty`
-      # once the logging channel fix ships.
-      _assert "$name" "exit non-zero"             "[ $rc -ne 0 ]"                                                       || scenario_ok=0
-      _assert "$name" "diagnostic on some stream" "[ -s '$stderr_f' ] || [ -s '$stdout_f' ]"                            || scenario_ok=0
+      _assert "$name" "exit non-zero"             "[ $rc -ne 0 ]"                      || scenario_ok=0
+      _assert "$name" "stderr non-empty"          "[ -s '$stderr_f' ]"                 || scenario_ok=0
+      ;;
+    bad-mount-readonly)
+      # Inputs mount correctly but the bind is read-only, so writing the report
+      # fails inside the container. Asserts the fix for the Band C silent-write
+      # failure: exit non-zero AND a real diagnostic on stderr (previously just
+      # an empty ANSI-colored line went to stdout and nothing to stderr).
+      _assert "$name" "exit non-zero"             "[ $rc -ne 0 ]"                      || scenario_ok=0
+      _assert "$name" "stderr non-empty"          "[ -s '$stderr_f' ]"                 || scenario_ok=0
+      _assert "$name" "FileNotFoundException on stderr" \
+                                                  "grep -q 'FileNotFoundException' '$stderr_f'" || scenario_ok=0
+      _assert "$name" "no report written"         "[ ! -f '$tmp/report.ttl' ]"         || scenario_ok=0
       ;;
     *)
       echo "INTERNAL: unknown scenario $name" >&2
@@ -101,10 +106,13 @@ _assert() {
 }
 
 echo "Using image: $IMAGE"
-run_scenario conforming     shapes.ttl         data-conforming.ttl
-run_scenario non-conforming shapes.ttl         data-nonconforming.ttl
+run_scenario conforming         shapes.ttl         data-conforming.ttl
+run_scenario non-conforming     shapes.ttl         data-nonconforming.ttl
 # invalid-input: the SUT here is the invalid SHACL file; data-conforming.ttl
 # is a throwaway valid data argument, not part of the assertion.
-run_scenario invalid-input  shapes-invalid.ttl data-conforming.ttl
+run_scenario invalid-input      shapes-invalid.ttl data-conforming.ttl
+# bad-mount-readonly: valid inputs, but the bind mount is read-only so the
+# report write fails. The `:ro` mount option is passed as the 4th argument.
+run_scenario bad-mount-readonly shapes.ttl         data-conforming.ttl :ro
 
 exit "$FAIL"
