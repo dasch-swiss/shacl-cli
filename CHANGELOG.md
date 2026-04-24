@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.6](https://github.com/dasch-swiss/shacl-cli/compare/v0.0.5...v0.0.6) (2026-04-24)
+
+
+### Bug Fixes
+
+* Surface Docker mount write failures on stderr ([#15](https://github.com/dasch-swiss/shacl-cli/issues/15)) ([5650c3f](https://github.com/dasch-swiss/shacl-cli/commit/5650c3fc358a0e85806557210bfe4152c1a75188))
+
+
+### Tests
+
+* Add Docker container integration smoke test for use with Linux CLI ([#13](https://github.com/dasch-swiss/shacl-cli/issues/13)) ([066bf03](https://github.com/dasch-swiss/shacl-cli/commit/066bf03b0725a57bd723156f91541f414c390f4e))
+
 ## [0.0.5](https://github.com/dasch-swiss/shacl-cli/compare/v0.0.4...v0.0.5) (2025-07-07)
 
 
