@@ -23,3 +23,16 @@ jobs:
         uses: dasch-swiss/shacl-cli/.github/actions/preparation@main
       - name: Run tests
         run: ./sbtx test
+
+  docker-it:
+    name: Docker integration test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout source and setup Java
+        uses: dasch-swiss/shacl-cli/.github/actions/preparation@main
+      - name: Build docker image locally
+        run: ./sbtx "root/Docker/publishLocal"
+      - name: Run docker integration test
+        run: bash scripts/it/docker-it.sh

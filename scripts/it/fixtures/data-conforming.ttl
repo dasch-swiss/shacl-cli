@@ -1,0 +1,6 @@
+@prefix ex: <http://example.org/wonderland#> .
+
+ex:Alice
+    a ex:Character ;
+    ex:name "Alice" ;
+    ex:location "Wonderland" .

@@ -1,0 +1,3 @@
+@prefix ex: <http://example.org/wonderland#> .
+
+ex:Broken a "unterminated string literal
