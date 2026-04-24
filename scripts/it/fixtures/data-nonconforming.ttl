@@ -1,0 +1,5 @@
+@prefix ex: <http://example.org/wonderland#> .
+
+ex:MadHatter
+    a ex:Character ;
+    ex:name "Mad Hatter" .

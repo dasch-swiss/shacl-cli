@@ -1,0 +1,21 @@
+@prefix sh:  <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex:  <http://example.org/wonderland#> .
+
+ex:CharacterShape
+    a sh:NodeShape ;
+    sh:targetClass ex:Character ;
+    sh:property [
+        sh:path ex:name ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Character must have exactly one name"
+    ] ;
+    sh:property [
+        sh:path ex:location ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Character must have exactly one location"
+    ] .

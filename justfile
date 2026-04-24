@@ -14,6 +14,10 @@ docker-build:
 docker-build-run-validate shacl data: docker-build
     docker run --rm -v `pwd`:/data daschswiss/shacl-cli:latest validate --shacl /data/shacl.ttl --data /data/data.ttl --report /data/report.ttl
 
+# Run the docker integration test against a freshly-built local image
+docker-it: docker-build
+    bash scripts/it/docker-it.sh
+
 # Validate SHACL data in the current directory, produces report.ttl
 validate shacl data:
     @echo "Validating SHACL shapes"
