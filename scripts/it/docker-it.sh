@@ -25,7 +25,7 @@ CONFORMS_TRUE_RE='sh:conforms[[:space:]]+true'
 CONFORMS_FALSE_RE='sh:conforms[[:space:]]+false'
 
 run_scenario() {
-  local name="$1" shapes_fixture="$2" data_fixture="$3" mount_opts="${4:-}"
+  local name="$1" shapes_fixture="$2" data_fixture="$3" mount_opts="${4:-}" report_path="${5:-/data/report.ttl}"
   local tmp stdout_f stderr_f rc=0
   tmp="$(mktemp -d)"
   stdout_f="$(mktemp)"
@@ -40,7 +40,7 @@ run_scenario() {
   chmod 777 "$tmp"
 
   docker run --rm -v "$tmp:/data${mount_opts}" "$IMAGE" \
-    validate --shacl /data/shapes.ttl --data /data/data.ttl --report /data/report.ttl \
+    validate --shacl /data/shapes.ttl --data /data/data.ttl --report "$report_path" \
     >"$stdout_f" 2>"$stderr_f" || rc=$?
 
   # Assert per-scenario expectations.
@@ -62,11 +62,17 @@ run_scenario() {
       _assert "$name" "exit non-zero"             "[ $rc -ne 0 ]"                      || scenario_ok=0
       _assert "$name" "stderr non-empty"          "[ -s '$stderr_f' ]"                 || scenario_ok=0
       ;;
-    bad-mount-readonly)
-      # Inputs mount correctly but the bind is read-only, so writing the report
-      # fails inside the container. Asserts the fix for the Band C silent-write
-      # failure: exit non-zero AND a real diagnostic on stderr (previously just
-      # an empty ANSI-colored line went to stdout and nothing to stderr).
+    bad-mount-readonly | bad-mount-wrong-target)
+      # bad-mount-readonly:    inputs mount correctly but the bind is read-only,
+      #                        so writing the report fails with "Read-only file
+      #                        system".
+      # bad-mount-wrong-target: inputs mount correctly but the report path points
+      #                         outside any bind mount — FileOutputStream fails
+      #                         with "No such file or directory".
+      #
+      # Both assert the fix for the Band C silent-write failure: exit non-zero
+      # AND a real diagnostic on stderr (previously just an empty ANSI-colored
+      # line went to stdout and nothing to stderr).
       _assert "$name" "exit non-zero"             "[ $rc -ne 0 ]"                      || scenario_ok=0
       _assert "$name" "stderr non-empty"          "[ -s '$stderr_f' ]"                 || scenario_ok=0
       _assert "$name" "FileNotFoundException on stderr" \
@@ -113,6 +119,11 @@ run_scenario non-conforming     shapes.ttl         data-nonconforming.ttl
 run_scenario invalid-input      shapes-invalid.ttl data-conforming.ttl
 # bad-mount-readonly: valid inputs, but the bind mount is read-only so the
 # report write fails. The `:ro` mount option is passed as the 4th argument.
-run_scenario bad-mount-readonly shapes.ttl         data-conforming.ttl :ro
+run_scenario bad-mount-readonly    shapes.ttl data-conforming.ttl :ro
+# bad-mount-wrong-target: valid inputs at /data, but --report points outside
+# any mount (`/elsewhere/report.ttl`). Simulates the user mounting the output
+# volume at a path that doesn't match their --report argument. The 5th arg
+# overrides the report path.
+run_scenario bad-mount-wrong-target shapes.ttl data-conforming.ttl "" /elsewhere/report.ttl
 
 exit "$FAIL"
